@@ -2,10 +2,11 @@
 # Automated Pothole Detection System - Streamlit Interactive App
 # ============================================================
 import streamlit as st
-import cv2, tempfile, os
+import tempfile, os
 import numpy as np
 from ultralytics import YOLO
 from pathlib import Path
+import cv2  # Make sure 'opencv-python-headless' is in requirements.txt
 
 # ============================================================
 # STREAMLIT PAGE SETUP
@@ -22,6 +23,7 @@ You can preview detections and download the processed results.
 # ============================================================
 @st.cache_resource
 def load_model():
+    # Use forward slashes for cross-platform compatibility
     model_path = "best.pt"  
     model = YOLO(model_path)
     return model
@@ -55,12 +57,10 @@ if uploaded_file:
     if file_ext in ["jpg", "jpeg", "png"]:
         st.subheader("🖼️ Image Detection Preview")
 
-        # Run YOLO inference
         results = model.predict(source=input_path, conf=0.25)
         result = results[0].plot()  # Annotated frame as NumPy array (BGR)
         result_rgb = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
 
-        # Display and provide download option
         st.image(result_rgb, caption="Detected Potholes", use_container_width=True)
 
         output_path = os.path.join(temp_dir, "detected_image.jpg")
@@ -79,24 +79,24 @@ if uploaded_file:
     # ============================================================
     elif file_ext in ["mp4", "mov", "avi"]:
         st.subheader("🎥 Video Detection Processing")
-
-        # Set up output video path
         output_path = os.path.join(temp_dir, "detected_video.mp4")
-
-        # Run YOLOv8 tracking or detection
         st.info("Processing video... This may take a while ⏳")
-        results = model.predict(source=input_path, conf=0.25, save=True, project=temp_dir, name="processed")
+
+        results = model.predict(
+            source=input_path,
+            conf=0.25,
+            save=True,
+            project=temp_dir,
+            name="processed"
+        )
 
         # YOLO saves results automatically under temp_dir/processed/
         result_folder = Path(temp_dir) / "processed"
         video_results = list(result_folder.glob("*.mp4"))
         if video_results:
             result_video_path = str(video_results[0])
-
-            # Display video
             st.video(result_video_path)
 
-            # Download button
             with open(result_video_path, "rb") as file:
                 st.download_button(
                     label="📥 Download Processed Video",
@@ -127,4 +127,3 @@ st.markdown(
     "<center>Developed for Automated Road Condition Monitoring using Deep Learning 🚗</center>",
     unsafe_allow_html=True
 )
-
