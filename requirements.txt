@@ -1,5 +1,7 @@
-opencv-python-headless==4.8.1.78
-ultralytics
 streamlit
+torch
+ultralytics
+opencv-python-headless
 numpy
 matplotlib
+PyYAML
