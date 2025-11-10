@@ -22,7 +22,7 @@ You can preview detections and download the processed results.
 # ============================================================
 @st.cache_resource
 def load_model():
-    model_path = "pothole_detection\run_104438\weights\best.pt"  
+    model_path = "best.pt"  
     model = YOLO(model_path)
     return model
 
@@ -127,3 +127,4 @@ st.markdown(
     "<center>Developed for Automated Road Condition Monitoring using Deep Learning 🚗</center>",
     unsafe_allow_html=True
 )
+
