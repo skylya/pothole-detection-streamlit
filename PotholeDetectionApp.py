@@ -6,10 +6,7 @@ import tempfile, os
 import numpy as np
 from ultralytics import YOLO
 from pathlib import Path
-import cv2  # Make sure 'opencv-python-headless' is in requirements.txt
-
-if "processed_video_path" not in st.session_state:
-    st.session_state.processed_video_path = None
+import cv2 
 
 # ============================================================
 # STREAMLIT PAGE SETUP
@@ -26,7 +23,6 @@ You can preview detections and download the processed results.
 # ============================================================
 @st.cache_resource
 def load_model():
-    # Use forward slashes for cross-platform compatibility
     model_path = "best.pt"  
     model = YOLO(model_path)
     return model
@@ -103,19 +99,15 @@ if uploaded_file:
         cap.release()
         out.release()
     
-        st.session_state.processed_video_path = output_path
         st.success("Video processed successfully!")
-
-        # Display saved video from session state (prevents re-run)
-        if st.session_state.processed_video_path:
-            st.video(st.session_state.processed_video_path)
-            with open(st.session_state.processed_video_path, "rb") as file:
-                st.download_button(
-                    label="📥 Download Processed Video",
-                    data=file,
-                    file_name="pothole_detected.mp4",
-                    mime="video/mp4"
-                )
+        st.video(output_path)
+        with open(output_path, "rb") as file:
+            st.download_button(
+                label="📥 Download Processed Video",
+                data=file,
+                file_name="pothole_detected.mp4",
+                mime="video/mp4"
+            )
 
         # --- Free up memory ---
         import gc, torch
@@ -142,5 +134,6 @@ st.markdown(
     "<center>Developed for Automated Road Condition Monitoring using Deep Learning 🚗</center>",
     unsafe_allow_html=True
 )
+
 
 
