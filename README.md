@@ -8,7 +8,7 @@ A web-based application that automatically detects potholes in road images or vi
 
 ## Live Demo
 
-Try the app live here: [Automated Pothole Detection](https://your-streamlit-app-link)
+Try the app live here: [Automated Pothole Detection](https://automated-pothole-detection-app.streamlit.app/)
 
 ---
 
@@ -39,10 +39,12 @@ Try the app live here: [Automated Pothole Detection](https://your-streamlit-app-
     git clone https://github.com/your-username/automated-pothole-detection.git
     cd automated-pothole-detection
 2. **Create a virtual environment (recommended):**
+   ```bash
     python -m venv venv
     source venv/bin/activate   # Linux/Mac
     venv\Scripts\activate      # Windows
 3. **Install dependencies and packages:**
+   ```bash
     pip install -r requirements.txt
     pip install -r packages.txt
 4. **Download/Place the YOLOv8 model:**
@@ -53,6 +55,7 @@ Try the app live here: [Automated Pothole Detection](https://your-streamlit-app-
 ## Usage
 
 1. **Run the Streamlit app:**
+   ```bash
     streamlit run app.py
 2. **Upload an image or video of a road through the interface.**
 3. **Preview detections: The system will highlight potholes and classify severity.**
