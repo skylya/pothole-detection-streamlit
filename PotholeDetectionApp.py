@@ -14,7 +14,7 @@ import cv2
 st.set_page_config(page_title="Automated Pothole Detection", layout="wide")
 st.title("🕳️ Automated Pothole Detection System")
 st.markdown("""
-Upload **images** or **videos** of roads to automatically detect potholes using a pretrained **YOLOv8 model**.  
+Upload **images** or **videos** of roads to automatically detect potholes using a pretrained **YOLOv8s model**.  
 You can preview detections and download the processed results.
 """)
 
@@ -28,7 +28,7 @@ def load_model():
     return model
 
 model = load_model()
-st.sidebar.success("YOLOv8 model loaded successfully!")
+st.sidebar.success("YOLOv8s model loaded successfully!")
 
 # ============================================================
 # FILE UPLOAD SECTION
@@ -134,6 +134,7 @@ st.markdown(
     "<center>Developed for Automated Road Condition Monitoring using Deep Learning 🚗</center>",
     unsafe_allow_html=True
 )
+
 
 
 
