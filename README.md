@@ -48,6 +48,8 @@ Try the app live here: [Automated Pothole Detection](https://your-streamlit-app-
 4. **Download/Place the YOLOv8 model:**
     Place the trained **best.pt** file in the root directory of the project.
 
+---
+
 ## Usage
 
 1. **Run the Streamlit app:**
@@ -56,14 +58,20 @@ Try the app live here: [Automated Pothole Detection](https://your-streamlit-app-
 3. **Preview detections: The system will highlight potholes and classify severity.**
 4. **Download processed results as an image or video.**
 
+---
+
 ## Sidebar Settings
 
 - Confidence Threshold: Adjust detection sensitivity. Lower values detect more potholes but may reduce accuracy.
 - Model Info: Displays information about the YOLOv8s model and its purpose.
 
+---
+
 ## Notes
 - The app processes videos frame by frame to prevent memory overflow.
 - GPU acceleration is supported if available for faster detection.
+
+---
 
 ## Future Improvements
 - Real-time camera feed detection.
