@@ -29,7 +29,7 @@ def load_model():
     return model
 
 model = load_model()
-st.sidebar.success("✅ YOLOv8 model loaded successfully!")
+st.sidebar.success("YOLOv8 model loaded successfully!")
 
 # ============================================================
 # FILE UPLOAD SECTION
@@ -55,7 +55,7 @@ if uploaded_file:
     # IMAGE DETECTION
     # ============================================================
     if file_ext in ["jpg", "jpeg", "png"]:
-        st.subheader("🖼️ Image Detection Preview")
+        st.subheader("Image Detection Preview")
 
         results = model.predict(source=input_path, conf=0.25)
         result = results[0].plot()  # Annotated frame as NumPy array (BGR)
@@ -79,33 +79,42 @@ if uploaded_file:
     # ============================================================
     elif file_ext in ["mp4", "mov", "avi"]:
         st.subheader("🎥 Video Detection Processing")
+        st.info("Processing video frame by frame to prevent memory overflow")
+
+        cap = cv2.VideoCapture(input_path)
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps = cap.get(cv2.CAP_PROP_FPS)
         output_path = os.path.join(temp_dir, "detected_video.mp4")
-        st.info("Processing video... This may take a while ⏳")
-
-        results = model.predict(
-            source=input_path,
-            conf=0.25,
-            save=True,
-            project=temp_dir,
-            name="processed"
-        )
-
-        # YOLO saves results automatically under temp_dir/processed/
-        result_folder = Path(temp_dir) / "processed"
-        video_results = list(result_folder.glob("*.mp4"))
-        if video_results:
-            result_video_path = str(video_results[0])
-            st.video(result_video_path)
-
-            with open(result_video_path, "rb") as file:
-                st.download_button(
-                    label="📥 Download Processed Video",
-                    data=file,
-                    file_name="pothole_detected.mp4",
-                    mime="video/mp4"
-                )
-        else:
-            st.error("No processed video found. Please try again.")
+    
+        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+        out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+    
+        # Process frames in stream mode to save RAM
+        results = model(source=input_path, stream=True, conf=0.25)
+    
+        for r in results:
+            frame = r.plot()  # Draw YOLO detections on frame
+            out.write(frame)
+    
+        cap.release()
+        out.release()
+    
+        st.success("Video processed successfully!")
+        st.video(output_path)
+    
+        with open(output_path, "rb") as file:
+            st.download_button(
+                label="📥 Download Processed Video",
+                data=file,
+                file_name="pothole_detected.mp4",
+                mime="video/mp4"
+            )
+    
+        # --- Free up memory ---
+        import gc, torch
+        torch.cuda.empty_cache()
+        gc.collect()
 
 # ============================================================
 # SIDEBAR INFO
@@ -127,3 +136,4 @@ st.markdown(
     "<center>Developed for Automated Road Condition Monitoring using Deep Learning 🚗</center>",
     unsafe_allow_html=True
 )
+
